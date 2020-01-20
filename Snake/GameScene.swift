@@ -41,6 +41,15 @@ class GameScene: SKScene {
     
     private func startGame() {
         print("start game")
+        
+        gameLogo.run(SKAction.move(by: CGVector(dx: -50, dy: 600), duration: 0.5)) {
+            self.gameLogo.isHidden = true
+        }
+        playButton.run(SKAction.scale(to: 0, duration: 0.3)) {
+            self.playButton.isHidden = true
+        }
+        let bottomCorner = CGPoint(x: 0, y: (frame.size.height / -2) + 20)
+        bestScore.run(SKAction.move(to: bottomCorner, duration: 0.4))
     }
     
     private func initializeMenu() {
