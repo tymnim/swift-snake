@@ -16,12 +16,31 @@ class GameScene: SKScene {
     var bestScore: SKLabelNode!
     var playButton: SKShapeNode!
     
+    var game: GameManager!
+    
     override func didMove(to view: SKView) {
         initializeMenu()
+        game = GameManager()
     }
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            let location = touch.location(in: self)
+            let touchedNode = self.nodes(at: location)
+            for node in touchedNode {
+                if node.name == "play_button" {
+                    startGame()
+                }
+            }
+        }
+    }
+    
+    private func startGame() {
+        print("start game")
     }
     
     private func initializeMenu() {
@@ -45,6 +64,7 @@ class GameScene: SKScene {
         
         // Create plat button
         playButton = SKShapeNode()
+        playButton.name = "play_button"
         playButton.zPosition = 1
         playButton.position = CGPoint(x: 0, y: (frame.size.height / -2) + 200)
         playButton.fillColor = SKColor.cyan
