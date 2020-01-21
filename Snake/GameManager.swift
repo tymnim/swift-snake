@@ -19,11 +19,12 @@ class GameManager {
     let numCols = 20
     var numRows: Int!
     
-    enum Direction {
+    enum Directions {
         case up, right, down, left
     }
     
-    var playerDirection = Direction.up
+    var playerDirection = Directions.up
+    
     
     init(scene: GameScene, frame: CGRect) {
         self.scene = scene
@@ -92,8 +93,6 @@ class GameManager {
             xChange = -1
             yChange = 0
             break
-        default:
-            break
         }
         
         if scene.playerPositions.count > 0 {
@@ -118,5 +117,30 @@ class GameManager {
         }
         
         renderChange()
+    }
+    
+    func swipe(id: Int) {
+        var direction: Directions!
+        switch id {
+        case 0:
+            direction = .up
+            break
+        case 1:
+            direction = .right
+            break
+        case 2:
+            direction = .down
+            break
+        default: // 3 and all the rest we turn left
+            direction = .left
+            break
+        }
+        
+        if (direction != .up && playerDirection == .down) ||
+            (direction != .down && playerDirection == .up) ||
+            (direction != .right && playerDirection == .left) ||
+            (direction != .left && playerDirection == .right) {
+            playerDirection = direction
+        }
     }
 }
