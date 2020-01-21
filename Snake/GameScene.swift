@@ -23,6 +23,8 @@ class GameScene: SKScene {
     var gameBackground: SKShapeNode!
     var gameArray: [(node: SKShapeNode, x: Int, y: Int)] = []
     
+    var scorePos: CGPoint?
+    
     override func didMove(to view: SKView) {
         initializeMenu()
         game = GameManager(scene: self, frame: frame)

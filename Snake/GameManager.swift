@@ -25,6 +25,7 @@ class GameManager {
     
     var playerDirection = Directions.up
     
+    var currentScore: Int = 0
     
     init(scene: GameScene, frame: CGRect) {
         self.scene = scene
@@ -38,6 +39,7 @@ class GameManager {
         scene.playerPositions.append((10, 11))
         scene.playerPositions.append((10, 12))
         renderChange()
+        generateNewPoint()
     }
     
     // called every frame
@@ -48,8 +50,31 @@ class GameManager {
             if time >= nextTime! {
                 nextTime = time + timeExtension
                 updatePlayerPosition()
+                checkForScore()
             }
         }
+    }
+    
+    private func checkForScore() {
+        if scene.scorePos != nil {
+            let x = scene.playerPositions[0].0
+            let y = scene.playerPositions[0].1
+            if Int((scene.scorePos?.x)!) == y && Int((scene.scorePos?.y)!) == x {
+                currentScore += 1
+                scene.currentScore.text = "Score: \(currentScore)"
+                generateNewPoint()
+            }
+        }
+    }
+    
+    private func generateNewPoint() {
+        var randomX = CGFloat(arc4random_uniform(UInt32(numCols)))
+        var randomY = CGFloat(arc4random_uniform(UInt32(numRows)))
+        while contains(array: scene.playerPositions, point: (Int(randomX), Int(randomY))) {
+            randomX = CGFloat(arc4random_uniform(UInt32(numCols)))
+            randomY = CGFloat(arc4random_uniform(UInt32(numRows)))
+        }
+        scene.scorePos = CGPoint(x: randomX, y: randomY)
     }
     
     func renderChange() {
@@ -58,6 +83,11 @@ class GameManager {
                 cell.fillColor = SKColor.cyan
             } else {
                 cell.fillColor = SKColor.clear
+                if (scene.scorePos != nil) {
+                    if Int((scene.scorePos?.x)!) == y && Int((scene.scorePos?.y)!) == x {
+                        cell.fillColor = SKColor.red
+                    }
+                }
             }
         }
     }
