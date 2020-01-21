@@ -11,9 +11,13 @@ import SpriteKit
 class GameManager {
     
     var scene: GameScene!
+    var frame: CGRect!
     
     var nextTime: Double?
     var timeExtension: Double = 0.15
+
+    let numCols = 20
+    var numRows: Int!
     
     enum Direction {
         case up, right, down, left
@@ -21,12 +25,14 @@ class GameManager {
     
     var playerDirection = Direction.up
     
-    init(scene: GameScene) {
+    init(scene: GameScene, frame: CGRect) {
         self.scene = scene
+        self.frame = frame
     }
     
     // init game view and player
     func initGame() {
+        numRows = Int((frame.size.height - 200) / ((frame.size.width - 100) / CGFloat(numCols)))
         scene.playerPositions.append((10, 10))
         scene.playerPositions.append((10, 11))
         scene.playerPositions.append((10, 12))
@@ -91,6 +97,18 @@ class GameManager {
         }
         
         if scene.playerPositions.count > 0 {
+            let x = scene.playerPositions[0].1
+            let y = scene.playerPositions[0].0
+            if y > numRows {
+                scene.playerPositions[0].0 = 0
+            } else if y < 0 {
+                scene.playerPositions[0].0 = numRows
+            } else if x > numCols {
+               scene.playerPositions[0].1 = 0
+            } else if x < 0 {
+                scene.playerPositions[0].1 = numCols
+            }
+            
             var start = scene.playerPositions.count - 1
             while start > 0 {
                 scene.playerPositions[start] = scene.playerPositions[start - 1]
