@@ -18,9 +18,15 @@ class GameScene: SKScene {
     
     var game: GameManager!
     
+    var currentScore: SKLabelNode!
+    var playerPositions: [(Int, Int)] = []
+    var gameBackground: SKShapeNode!
+    var gameArray: [(node: SKShapeNode, x: Int, y: Int)] = []
+    
     override func didMove(to view: SKView) {
         initializeMenu()
         game = GameManager()
+        initializeGameView()
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -40,8 +46,6 @@ class GameScene: SKScene {
     }
     
     private func startGame() {
-        print("start game")
-        
         gameLogo.run(SKAction.move(by: CGVector(dx: -50, dy: 600), duration: 0.5)) {
             self.gameLogo.isHidden = true
         }
@@ -49,11 +53,19 @@ class GameScene: SKScene {
             self.playButton.isHidden = true
         }
         let bottomCorner = CGPoint(x: 0, y: (frame.size.height / -2) + 20)
-        bestScore.run(SKAction.move(to: bottomCorner, duration: 0.4))
+        bestScore.run(SKAction.move(to: bottomCorner, duration: 0.4)) {
+            self.gameBackground.setScale(0)
+            self.gameBackground.isHidden = false
+            self.gameBackground.run(SKAction.scale(to: 1, duration: 0.4))
+
+            self.currentScore.setScale(0)
+            self.currentScore.isHidden = false
+            self.currentScore.run(SKAction.scale(to: 1, duration: 0.4))
+        }
     }
     
     private func initializeMenu() {
-        // Create game title
+        // Creates game title
         gameLogo = SKLabelNode(fontNamed: "ArialROundedMTBold")
         gameLogo.zPosition = 1
         gameLogo.position = CGPoint(x: 0, y: (frame.size.height / 2) - 200)
@@ -62,7 +74,7 @@ class GameScene: SKScene {
         gameLogo.fontColor = SKColor.red
         self.addChild(gameLogo)
         
-        // Create best score
+        // Creates best score
         bestScore = SKLabelNode(fontNamed: "ArialRoundedMTBold")
         bestScore.zPosition = 1
         bestScore.position = CGPoint(x:0, y: gameLogo.position.y - 50)
@@ -71,7 +83,7 @@ class GameScene: SKScene {
         bestScore.fontColor = SKColor.white
         self.addChild(bestScore)
         
-        // Create plat button
+        // Creates plat button
         playButton = SKShapeNode()
         playButton.name = "play_button"
         playButton.zPosition = 1
@@ -85,5 +97,56 @@ class GameScene: SKScene {
         path.addLines(between: [topCorner, bottomCorner, middle])
         playButton.path = path
         self.addChild(playButton)
+    }
+    
+    private func initializeGameView() {
+        currentScore = SKLabelNode(fontNamed: "ArialRoundedMTBold")
+        currentScore.zPosition = 1
+        currentScore.position = CGPoint(x: 0, y: (frame.size.height / -2) + 60)
+        currentScore.fontSize = 40
+        currentScore.isHidden = true
+        currentScore.text = "Score: 0"
+        currentScore.fontColor = SKColor.white
+        self.addChild(currentScore)
+        
+        let numCols = 20
+        let width = frame.size.width - 100
+        let cellWidth = width / CGFloat(numCols)
+        let aproximateHeight = frame.size.height - 200
+        let numRows = Int(aproximateHeight / cellWidth)
+        let height = cellWidth * CGFloat(numRows)
+        
+        let rect = CGRect(x: -width / 2, y: -height / 2, width: width, height: height)
+        gameBackground = SKShapeNode(rect: rect, cornerRadius: 0.02)
+        gameBackground.fillColor = SKColor.darkGray
+        gameBackground.zPosition = 2
+        gameBackground.isHidden = true
+        self.addChild(gameBackground)
+        
+        createGameBoard(width: width, height: height, cellWidth: cellWidth, numRows: numRows, numCols: numCols)
+    }
+    
+    public func createGameBoard(width: CGFloat, height: CGFloat,
+                                cellWidth: CGFloat,
+                                numRows: Int, numCols: Int) {
+        // Creates a game board, initialize array of cells
+        var x = CGFloat(width / -2) + (cellWidth / 2)
+        var y = CGFloat(height / 2) - (cellWidth / 2)
+        // creates cells
+        for i in 0...numRows - 1 {
+            for j in 0...numCols - 1 {
+                let cellNode = SKShapeNode(rectOf: CGSize(width: cellWidth, height: cellWidth))
+                cellNode.strokeColor = SKColor.black
+                cellNode.zPosition = 2
+                cellNode.position = CGPoint(x: x, y: y)
+                
+                gameArray.append((node: cellNode, x: i, y: j))
+                gameBackground.addChild(cellNode)
+                
+                x += cellWidth
+            }
+            x = CGFloat(width / -2) + (cellWidth / 2)
+            y -= cellWidth
+        }
     }
 }
