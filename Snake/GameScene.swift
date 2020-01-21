@@ -25,12 +25,14 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         initializeMenu()
-        game = GameManager()
+        game = GameManager(scene: self)
         initializeGameView()
     }
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        
+        game.update(time: currentTime)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -61,6 +63,8 @@ class GameScene: SKScene {
             self.currentScore.setScale(0)
             self.currentScore.isHidden = false
             self.currentScore.run(SKAction.scale(to: 1, duration: 0.4))
+            
+            self.game.initGame()
         }
     }
     
