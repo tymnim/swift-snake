@@ -113,6 +113,7 @@ class GameScene: SKScene {
         bestScore.fontSize = 40
         bestScore.text = "Best Score: 0"
         bestScore.fontColor = SKColor.white
+        bestScore.text = "Best Score: \(UserDefaults.standard.integer(forKey: "bestScore"))"
         self.addChild(bestScore)
         
         // Creates plat button

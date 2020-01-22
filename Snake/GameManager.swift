@@ -93,6 +93,7 @@ class GameManager {
             }
             if hasFinished {
                 print("end game")
+                updateScore()
                 playerDirection = .up
                 // animation completed
                 scene.scorePos = nil
@@ -227,5 +228,14 @@ class GameManager {
                     playerDirection = direction
             }
         }
+    }
+    
+    private func updateScore() {
+         if currentScore > UserDefaults.standard.integer(forKey: "bestScore") {
+              UserDefaults.standard.set(currentScore, forKey: "bestScore")
+         }
+         currentScore = 0
+         scene.currentScore.text = "Score: 0"
+         scene.bestScore.text = "Best Score: \(UserDefaults.standard.integer(forKey: "bestScore"))"
     }
 }
