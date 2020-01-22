@@ -27,7 +27,7 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         initializeMenu()
-        game = GameManager(scene: self, frame: frame)
+        game = GameManager(scene: self)
         initializeGameView()
         
         let swipeUp:UISwipeGestureRecognizer = UISwipeGestureRecognizer(target:self, action: #selector(swipeU))
