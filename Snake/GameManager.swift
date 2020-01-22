@@ -63,6 +63,9 @@ class GameManager {
                 currentScore += 1
                 scene.currentScore.text = "Score: \(currentScore)"
                 generateNewPoint()
+                scene.playerPositions.append(scene.playerPositions.last!)
+                scene.playerPositions.append(scene.playerPositions.last!)
+                scene.playerPositions.append(scene.playerPositions.last!)
             }
         }
     }
