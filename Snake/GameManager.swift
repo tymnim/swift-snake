@@ -19,11 +19,11 @@ class GameManager {
     let numCols = 20
     var numRows: Int!
     
-    enum Directions {
-        case up, right, down, left
+    enum States {
+        case up, right, down, left, dead
     }
     
-    var playerDirection = Directions.up
+    var playerDirection = States.up
     
     var currentScore: Int = 0
     
@@ -51,6 +51,7 @@ class GameManager {
                 nextTime = time + timeExtension
                 updatePlayerPosition()
                 checkForScore()
+                checkForDeath()
             }
         }
     }
@@ -66,6 +67,17 @@ class GameManager {
                 scene.playerPositions.append(scene.playerPositions.last!)
                 scene.playerPositions.append(scene.playerPositions.last!)
                 scene.playerPositions.append(scene.playerPositions.last!)
+            }
+        }
+    }
+    
+    private func checkForDeath() {
+        if scene.playerPositions.count > 0 {
+            var arrayOfPossitions = scene.playerPositions
+            let headOfSnake = arrayOfPossitions[0]
+            arrayOfPossitions.remove(at: 0)
+            if contains(array: arrayOfPossitions, point: headOfSnake) {
+                playerDirection = .dead
             }
         }
     }
@@ -126,6 +138,10 @@ class GameManager {
             xChange = -1
             yChange = 0
             break
+        case .dead:
+            xChange = 0
+            yChange = 0
+            break
         }
         
         if scene.playerPositions.count > 0 {
@@ -153,7 +169,7 @@ class GameManager {
     }
     
     func swipe(id: Int) {
-        var direction: Directions!
+        var direction: States!
         switch id {
         case 0:
             direction = .up
@@ -173,7 +189,9 @@ class GameManager {
             (direction != .down && playerDirection == .up) ||
             (direction != .right && playerDirection == .left) ||
             (direction != .left && playerDirection == .right) {
-            playerDirection = direction
+            if (playerDirection != .dead) {
+                    playerDirection = direction
+            }
         }
     }
 }
